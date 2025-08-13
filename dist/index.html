@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pagination Plugin — Contacts Table Demo</title>
+
+  <!-- Your plugin CSS (borderless buttons, size modifiers, etc.) -->
+  <link rel="stylesheet" href="style.min.css" />
+
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #0f172a;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --border: #1f2937;
+      --row-hover: rgba(255,255,255,0.04);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: #0b1220; color: var(--text);
+      min-height: 100vh; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      padding: 40px 16px;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .title { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+    .card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0));
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .toolbar { padding: 14px 16px; border-bottom: 1px solid var(--border); display:flex; gap:10px }
+    .search { display:flex; gap:10px; align-items:center; padding:10px 12px; border-radius:12px; background:#0b1324; border:1px solid var(--border); flex:1 }
+    .search input { all: unset; flex:1; font-size:14px; color:var(--text) }
+
+    .table-wrap { overflow:auto }
+    table { width:100%; border-collapse: separate; border-spacing:0; font-size:14px }
+    thead th { text-align:left; font-weight:600; color:var(--muted);
+      border-bottom:1px solid var(--border); background: rgba(255,255,255,.02);
+      position:sticky; top:0; z-index:1; padding:14px 16px; }
+    tbody tr { transition: background 160ms ease }
+    tbody tr:hover { background: var(--row-hover) }
+    td { padding:14px 16px; border-bottom:1px solid var(--border) }
+
+    .status { display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; font-weight:600; font-size:12px; letter-spacing:.2px }
+    .status.active   { color:#22c55e; background:rgba(34,197,94,.12); border:1px solid rgba(34,197,94,.25) }
+    .status.pending  { color:#f59e0b; background:rgba(245,158,11,.12); border:1px solid rgba(245,158,11,.25) }
+    .status.inactive { color:#ef4444; background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.25) }
+
+    .footer { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 16px; border-top:1px solid var(--border) }
+    #pagination-controls { display:flex; flex-wrap:wrap; gap:6px; align-items:center; justify-content:flex-end }
+    .hint { color:var(--muted); font-size:12px }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">Contacts</div>
+
+    <div class="card">
+      <div class="toolbar">
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 21l-4.35-4.35m1.85-5.65a7 7 0 11-14 0 7 7 0 0114 0z" stroke="#64748b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <input id="searchInput" placeholder="Search name, email, company…" />
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="min-width:160px">Name</th>
+              <th style="min-width:220px">Email</th>
+              <th style="min-width:140px">Phone</th>
+              <th style="min-width:160px">Company</th>
+              <th style="min-width:140px">Role</th>
+              <th style="min-width:120px">Status</th>
+            </tr>
+          </thead>
+          <tbody id="contacts-body"></tbody>
+        </table>
+      </div>
+
+      <div class="footer">
+        <div class="hint" id="rangeInfo">Showing 0–0 of 0 contacts</div>
+        <div id="pagination-controls"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Your plugin -->
+  <script src="pagination.min.js"></script>
+
+  <script>
+    const firstNames = ["Dhan", "Aisyah", "Reza", "Putri", "Rama", "Sari", "Bima", "Nadia", "Fajar", "Rizki"];
+    const lastNames  = ["F.", "Kurnia", "Saputra", "Rahma", "Wijaya", "Pratama", "Ananda", "Halim", "Akbar", "Putra"];
+    const roles      = ["Manager", "Developer", "Designer", "Sales", "Marketing", "Support"];
+    const companies  = ["Kawaluyaan Tech", "Ngamprah Studio", "Tanimulya Labs", "Bandung Barat Co", "Sunda Digital", "Parahyangan Group"];
+    const statuses   = ["active", "inactive", "pending"];
+
+    const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const phone = () => `+62 ${Math.floor(800+Math.random()*199)}-${Math.floor(1000+Math.random()*8999)}-${Math.floor(1000+Math.random()*8999)}`;
+    const email = (name) => `${name.toLowerCase().replace(/\s+/g,'')}${Math.floor(Math.random()*100)}@example.com`;
+
+    const CONTACTS = Array.from({ length: 105 }, () => {
+      const full = `${rand(firstNames)} ${rand(lastNames)}`;
+      return { name: full, email: email(full), phone: phone(), company: rand(companies), role: rand(roles), status: rand(statuses) };
+    });
+
+    const tbody = document.getElementById('contacts-body');
+    const searchInput = document.getElementById('searchInput');
+    const rangeInfo = document.getElementById('rangeInfo');
+
+    let filtered = [...CONTACTS];
+
+    function updateRangeInfo(pg) {
+      const total = pg.data.length;
+      if (!total) { rangeInfo.textContent = 'No contacts found'; return; }
+      const start = (pg.currentPage - 1) * pg.itemsPerPage + 1;
+      const end = Math.min(pg.currentPage * pg.itemsPerPage, total);
+      rangeInfo.textContent = `Showing ${start}–${end} of ${total} contacts`;
+    }
+
+    const paginator = new Pagination(tbody, {
+      data: filtered,
+      itemsPerPage: 10,
+      maxVisiblePages: 5,
+      paginationId: "#pagination-controls",
+      size: 'large',
+      activeBgColor: '#2563eb',
+      activeTextColor: '#ffffff',
+      hoverBgColor: '#1f2937',
+      hoverTextColor: '#e5e7eb',
+      onPageChange: function () { updateRangeInfo(this); }
+    });
+
+    paginator.renderItems = function () {
+      const items = this.paginate();
+      tbody.innerHTML = items.map(c => `
+        <tr>
+          <td><strong>${c.name}</strong></td>
+          <td>${c.email}</td>
+          <td>${c.phone}</td>
+          <td>${c.company}</td>
+          <td>${c.role}</td>
+          <td><span class="status ${c.status}">${c.status.charAt(0).toUpperCase() + c.status.slice(1)}</span></td>
+        </tr>
+      `).join('');
+    };
+
+    paginator.render();
+    updateRangeInfo(paginator);
+
+    searchInput.addEventListener('input', () => {
+      const q = searchInput.value.trim().toLowerCase();
+      filtered = CONTACTS.filter(c =>
+        c.name.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q) ||
+        c.company.toLowerCase().includes(q) ||
+        c.role.toLowerCase().includes(q)
+      );
+      paginator.data = filtered;
+      paginator.currentPage = 1;
+      paginator.render();
+      updateRangeInfo(paginator);
+    });
+  </script>
+</body>
+</html>
