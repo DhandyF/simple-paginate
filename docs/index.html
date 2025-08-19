@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vanilla JS Pagination Plugin — Documentation</title>
+  <style>
+    :root{--bg:#0b1220;--card:#0f172a;--text:#e5e7eb;--muted:#94a3b8;--border:#1f2937;--accent:#2563eb;}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;padding:32px}
+    .container{max-width:980px;margin:0 auto}
+    h1{font-size:28px;margin:0 0 8px 0}
+    h2{margin-top:28px}
+    p,li{line-height:1.6}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0));border:1px solid var(--border);border-radius:14px;padding:18px;margin:18px 0}
+    code,pre{background:#0b1324;border:1px solid var(--border);border-radius:10px;padding:12px;color:#e5e7eb;display:block;overflow:auto}
+    table{width:100%;border-collapse:collapse;margin:10px 0 20px 0;font-size:14px}
+    th,td{border:1px solid var(--border);padding:10px;text-align:left}
+    th{background:rgba(255,255,255,.04)}
+    a{color:var(--accent);text-decoration:none}
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Vanilla JS Pagination Plugin</h1>
+    <p class="muted">Lightweight, dependency-free pagination with smart ellipsis, icon navigation, size presets, and fully customizable colors.</p>
+
+    <div class="card">
+      <h2>Live Demo</h2>
+      <p>Open the live preview: <a href="https://dhandyf.github.io/simple-paginate/" target="_blank" rel="noopener">Demo Site</a></p>
+    </div>
+
+    <h2>Installation</h2>
+<pre><code>&lt;link rel="stylesheet" href="style.min.css"&gt;
+&lt;script src="pagination.min.js"&gt;&lt;/script&gt;</code></pre>
+
+    <h2>Basic Usage</h2>
+<pre><code>&lt;div id="list"&gt;&lt;/div&gt;
+&lt;div id="pagination-controls"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+const data = Array.from({length:42},(_,i)=&gt;`Item ${i+1}`);
+const paginator = new Pagination(document.getElementById('list'),{
+  data,
+  itemsPerPage:10,
+  maxVisiblePages:5,
+  paginationId:'#pagination-controls',
+  size:'medium',
+  textColor:'inherit',
+  bgColor:'transparent',
+  activeBgColor:'#2563eb',
+  activeTextColor:'#ffffff',
+  hoverBgColor:'#1f2937',
+  hoverTextColor:'#e5e7eb',
+  onPageChange:function(page){console.log('Page',page);}
+});
+&lt;/script&gt;</code></pre>
+
+    <h2>Options</h2>
+    <table>
+      <thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>data</td><td>Array</td><td>[]</td><td>Items to paginate</td></tr>
+        <tr><td>itemsPerPage</td><td>Number</td><td>10</td><td>Items per page</td></tr>
+        <tr><td>maxVisiblePages</td><td>Number</td><td>5</td><td>Max numbered buttons before ellipsis</td></tr>
+        <tr><td>paginationId</td><td>String</td><td>-</td><td>CSS selector for the controls container</td></tr>
+        <tr><td>size</td><td>String</td><td>medium</td><td>small | medium | large</td></tr>
+        <tr><td>textColor</td><td>String</td><td>inherit</td><td>Inactive text color</td></tr>
+        <tr><td>bgColor</td><td>String</td><td>transparent</td><td>Inactive background color</td></tr>
+        <tr><td>activeBgColor</td><td>String</td><td>#007bff</td><td>Active button background</td></tr>
+        <tr><td>activeTextColor</td><td>String</td><td>#ffffff</td><td>Active button text color</td></tr>
+        <tr><td>hoverBgColor</td><td>String</td><td>#e0e0e0</td><td>Hover background (inactive)</td></tr>
+        <tr><td>hoverTextColor</td><td>String</td><td>#000000</td><td>Hover text color (inactive)</td></tr>
+        <tr><td>onPageChange</td><td>Function</td><td>()=&gt;{}</td><td>Called on page change; receives current page</td></tr>
+      </tbody>
+    </table>
+
+    <h2>API</h2>
+    <ul>
+      <li><code>paginate()</code> — returns current page slice of data</li>
+      <li><code>goToPage(n)</code> — jumps to page n</li>
+      <li><code>render()</code> — re-renders items & controls</li>
+    </ul>
+
+    <h2>Changelog</h2>
+    <ul>
+      <li><strong>v1.0.0</strong> — Initial release.</li>
+    </ul>
+  </div>
+</body>
+</html>
