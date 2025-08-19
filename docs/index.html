@@ -24,12 +24,26 @@
 <body>
   <div class="container">
     <h1>Vanilla JS Pagination Plugin</h1>
-    <p class="muted">Lightweight, dependency-free pagination with smart ellipsis, icon navigation, size presets, and fully customizable colors.</p>
+    <p class="muted">Lightweight, dependency-free pagination with smart ellipsis, icon navigation, size presets, search integration, and fully customizable colors.</p>
 
     <div class="card">
       <h2>Live Demo</h2>
-      <p>Open the live preview: <a href="https://dhandyf.github.io/simple-paginate/" target="_blank" rel="noopener">Demo Site</a></p>
+      <p>Check the live preview: <a href="https://dhandyf.github.io/simple-paginate/" target="_blank" rel="noopener">Demo Site</a></p>
     </div>
+
+    <h2>Overview</h2>
+    <p>This plugin makes it easy to paginate lists, tables, or any dataset in plain JavaScript — no dependencies. It supports smart ellipsis for compact navigation, previous/next & first/last icons, multiple size modes, search/filter compatibility, and full style customization.</p>
+
+    <h2>Features</h2>
+    <ul>
+      <li>Dependency-free — pure JavaScript</li>
+      <li>Customizable active/hover colors</li>
+      <li>Smart ellipsis navigation</li>
+      <li>Supports small, medium, and large sizes</li>
+      <li>Works with lists, tables, or custom renderers</li>
+      <li>Callback on page change</li>
+      <li>Lightweight (minified & gzipped)</li>
+    </ul>
 
     <h2>Installation</h2>
 <pre><code>&lt;link rel="stylesheet" href="style.min.css"&gt;
@@ -83,9 +97,12 @@ const paginator = new Pagination(document.getElementById('list'),{
       <li><code>render()</code> — re-renders items & controls</li>
     </ul>
 
+    <h2>Examples</h2>
+    <p>See the <a href="https://dhandyf.github.io/simple-paginate/" target="_blank" rel="noopener">demo site</a> for advanced examples, including table pagination with search integration.</p>
+
     <h2>Changelog</h2>
     <ul>
-      <li><strong>v1.0.0</strong> — Initial release.</li>
+      <li><strong>v1.0.0</strong> — Initial release with core features.</li>
     </ul>
   </div>
 </body>
